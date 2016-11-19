@@ -21,7 +21,10 @@ final class Module_Maps extends GWF_Module
 	{
 		GWF_Website::addJavascript($this->googleMapsScriptURL());
 	
+		$this->addCSS('gwf-maps.css');
 		$this->addJavascript('gwf-map-util.js');
+		$this->addJavascript('gwf-location-bar-controller.js');
+		$this->addJavascript('gwf-location-picker.js');
 		$this->addJavascript('gwf-position-service.js');
 	}
 	
@@ -34,6 +37,20 @@ final class Module_Maps extends GWF_Module
 			$apikey = '&key='.$apikey;
 		}
 		return sprintf('%s://maps.google.com/maps/api/js?sensors=%s%s', $protocol, $sensors, $apikey);
+	}
+
+	###############
+	### Sidebar ###
+	###############
+	public function sidebarContent($bar)
+	{
+		$this->onLoadLanguage();
+		if ($bar === 'top') {
+			return $this->template('position-state.php');
+		}
+		if ($bar === 'right') {
+			return $this->template('location-bar.php');
+		}
 	}
 	
 }
