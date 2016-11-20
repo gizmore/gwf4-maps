@@ -23,7 +23,7 @@ service('PositionSrvc', function($q, $rootScope) {
 	
 	PositionSrvc.INTERVAL = null;
 	
-	PositionSrvc.CURRENT = {
+	window.GWF_POSITION = PositionSrvc.CURRENT = {
 			latlng: null,   // google maps
 			position: { coords: { latitude: null, longitude: null} }, // browser
 			patch: { lat: null, lng: null },
