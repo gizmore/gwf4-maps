@@ -1,4 +1,8 @@
-.gwf-dialog-map {
+.gwf-dialog-map, #gwf-dialog-map {
 	width: 100%;
 	min-height: 10em;
+}
+
+#gwf-dialog-map {
+	
 }

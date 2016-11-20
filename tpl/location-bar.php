@@ -5,22 +5,12 @@
 		<div><?php echo $lang->lang('position_state'); ?>: {{data.position.state.text}}</div>
 		<coordinates class="gwf-position-coordinates">
 			<label>Lat: </label><latitude>{{data.position.lat}}</latitude>
-			<label>Lng: </label><longitude>{{data.position.lat}}</longitude>
+			<label>Lng: </label><longitude>{{data.position.lng}}</longitude>
 		</coordinates>
 		
 		<md-input-container>
-			<label>Lat: </label>
-			<md-input type="number" step="0.005" ng-model="data.fixLat"></md-input>
-		</md-input-container>
-
-		<md-input-container>
-			<label>Lat: </label>
-			<md-input type="number" step="0.005" ng-model="data.fixLat"></md-input>
-		</md-input-container>
-
-		<md-input-container>
 			<label>Fixture: </label>
-			<md-checkbox ng-model="data.fix"></md-input>
+			<md-checkbox ng-model="data.fix" ng-change="toggleFixture()"></md-input>
 		</md-input-container>
 
 		<section layout="row" flex>

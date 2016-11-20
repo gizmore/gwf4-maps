@@ -1,15 +1,16 @@
 <md-dialog aria-label="Location dialog">
 	<md-dialog-content layout-padding>
 		
-		<p>{{text</p>
+		<p>{{data.text}}</p>
 		
-		<div class="gwf-dialog-map">
-			<div id="GWF4MAP"></div>
+		<div layout="row" flex class="gwf-dialog-map">
+			<div id="gwf-dialog-map"></div>
 		</div>
 		
 	</md-dialog-content>
 
 	<md-dialog-actions>
+		<md-button ng-click="pickPosition()" class="md-primary" aria-label="Abort and close dialog">Pick</md-button>
 		<md-button ng-click="closeDialog()" class="md-primary" aria-label="Abort and close dialog">Abort</md-button>
 	</md-dialog-actions>
 

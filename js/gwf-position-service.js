@@ -24,30 +24,27 @@ service('PositionSrvc', function($q, $rootScope) {
 	PositionSrvc.INTERVAL = null;
 	
 	PositionSrvc.CURRENT = {
-			timestamp: null,
-			lat: null, lng: null, // gwf4
-			position: null, // browser
 			latlng: null,   // google maps
+			position: { coords: { latitude: null, longitude: null} }, // browser
 			patch: { lat: null, lng: null },
+			real: { timestamp: 0, lat: null, lng: null },
 			state: {
 				val: PositionSrvc.UNKNOWN,
 				text: 'unknown',
-			}
-	};
-	
-	PositionSrvc.setDefaultCoordinates = function(lat, lng) {
-		console.log('PositionSrvc.setDefaultCoordinates()'. lat, lng);
-		PositionSrvc.DEFAULT_LAT = lat;
-		PositionSrvc.DEFAULT_LNG = lng;
+			},
+			lat: null,
+			lng: null
 	};
 	
 	PositionSrvc.age = function() {
 		console.log('PositionSrvc.age()');
-		return c.timestamp <= 0? 1999999999 : new Date().getTime() - c.timestamp;
+		var c = PositionSrvc.CURRENT;
+		return c.real.timestamp <= 0? 1999999999 : new Date().getTime() - c.real.timestamp;
 	};
 	
 	PositionSrvc.togglePrecision = function() {
 		console.log('PositionSrvc.togglePrecision()');
+		PositionSrvc.OPTIONS.enableHighAccuracy = !PositionSrvc.OPTIONS.enableHighAccuracy;
 	};
 	
 	///////////
@@ -81,7 +78,7 @@ service('PositionSrvc', function($q, $rootScope) {
 		var p = position.coords;
 		PositionSrvc.setReal(p.latitude, p.longitude);
 		PositionSrvc.start();
-		defer.resolve()
+		defer.resolve(PositionSrvc.CURRENT);
 	};
 
 	PositionSrvc.probeFailure = function(defer, error) {
@@ -91,6 +88,7 @@ service('PositionSrvc', function($q, $rootScope) {
 			defer.reject(error);
 		}
 		else {
+			PositionSrvc.togglePrecision();
 			setTimeout(PositionSrvc.sendProbe.bind(this, defer), PositionSrvc.MAX_TRY_TIMEOUT);
 		}
 	};
@@ -142,7 +140,13 @@ service('PositionSrvc', function($q, $rootScope) {
 		var c = PositionSrvc.CURRENT;
 		c.patch.lat = null;
 		c.patch.lng = null;
-		PositionSrvc.probe();
+		PositionSrvc.setState(c.real.lat === null ? PositionSrvc.UNKNOWN : PositionSrvc.KNOWN);
+		if (c.real.lat) {
+			PositionSrvc.setCurrent(c.real.lat, c.real.lng, PositionSrvc.KNOWN);
+		}
+		else {
+			PositionSrvc.probe();
+		}
 	};
 	
 	/////////
@@ -150,14 +154,11 @@ service('PositionSrvc', function($q, $rootScope) {
 	/////////
 	PositionSrvc.setReal = function(lat, lng) {
 		console.log('PositionSrvc.setReal()', lat, lng);
-		if (PositionSrvc.patching()) {
-			PositionSrvc.setCurrent(lat, lng, PositionSrvc.KNOWN);
-			PositionSrvc.setCurrent(lat, lng, PositionSrvc.PATCHED);
-		}
-		else {
-			PositionSrvc.setCurrent(lat, lng, PositionSrvc.KNOWN);
-		}
-		$rootScope.$broadcast('gwf-position-changed', PositionSrvc.CURRENT);
+		var c = PositionSrvc.CURRENT;
+		c.real.timestamp = new Date().getTime();
+		c.real.lat = lat;
+		c.real.lng = lng;
+		PositionSrvc.setCurrent(lat, lng, PositionSrvc.CURRENT.state.val === PositionSrvc.UNKNOWN ? PositionSrvc.KNOWN : PositionSrvc.CURRENT.state.val);
 	};
 	
 	PositionSrvc.setCurrent = function(lat, lng, state) {
@@ -166,10 +167,12 @@ service('PositionSrvc', function($q, $rootScope) {
 		PositionSrvc.setState(state);
 		switch (c.state.val) {
 		case PositionSrvc.PATCHED:
-			lat = c.patch.lat;
-			lng = c.patch.lng;
+			PositionSrvc.setCoordinates(c.patch.lat, c.patch.lng);
+			break;
 		case PositionSrvc.KNOWN:
 			PositionSrvc.setCoordinates(lat, lng);
+			break;
+		case PositionSrvc.UNKNOWN:
 			break;
 		default:
 			console.error('Invalid state: '+state);
@@ -179,11 +182,11 @@ service('PositionSrvc', function($q, $rootScope) {
 	PositionSrvc.setCoordinates = function(lat, lng) {
 		console.log('PositionSrvc.setCoordinates()', lat, lng);
 		var c = PositionSrvc.CURRENT;
-		c.timestamp = new Date().getTime();
 		c.lat = lat;
 		c.lng = lng;
-		c.latlng = new google.maps.LatLng({lat: lat, lng: lng});
-		c.position = {};
+		c.latlng = new google.maps.LatLng({lat:lat, lng:lng});
+		c.position = {coords:{latitude: lat, longitude:lng}};
+		$rootScope.$broadcast('gwf-position-changed', PositionSrvc.CURRENT);
 	};
 	
 	PositionSrvc.setState = function(state) {

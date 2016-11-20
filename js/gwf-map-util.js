@@ -6,9 +6,9 @@ service('MapUtil', function() {
 	
 	MapUtil.MAP = null;
 	MapUtil.MAP_ID = 'GWF4MAP';
-	MapUtil.MARKERS = {};
-	MapUtil.PAN_TIMER = null;
-	MapUtil.PAN_TIMEOUT = 1337;
+//	MapUtil.MARKERS = {};
+//	MapUtil.PAN_TIMER = null;
+//	MapUtil.PAN_TIMEOUT = 1337;
 
 	MapUtil.OPTIONS = {
 //			backgroundColor: '#0008',
@@ -27,7 +27,7 @@ service('MapUtil', function() {
 //			mapTypeControlOptions: // Type:  MapTypeControlOptions – The initial display options for the Map type control.
 //			mapTypeId: 'ROADMAP' // Type:  MapTypeId
 			maxZoom: 16,
-			minZoom: 9,
+			minZoom: 6,
 //			noClear: true,
 //			panControl: true,
 //			panControlOptions: // Type:  PanControlOptions The display options for the Pan control.
@@ -56,16 +56,15 @@ service('MapUtil', function() {
 	};
 	
 	MapUtil.map = function(id) {
-		id = id || MapUtil.MAP_ID;
+		MapUtil.MAP_ID = id || MapUtil.MAP_ID;
 		if (!MapUtil.MAP) {
-			MapUtil.MAP = new google.maps.Map(MapUtil.canvas(), MapUtil.OPTIONS);
-			if (!MapUtil.MAP) {
-				console.error('Can not find map with id: '+id);
-				return undefined;
-			}
-//			MapUtil.MAP.addListener('center_changed', MapUtil.panBack);
+			var MAP = new google.maps.Map(MapUtil.canvas(), MapUtil.OPTIONS);
+//			if (!MapUtil.MAP) {
+//				console.error('Can not find map with id: '+id);
+//				return undefined;
+//			}
 		}
-		return MapUtil.MAP;
+		return MAP;
 	};
 
 //	/////////////
