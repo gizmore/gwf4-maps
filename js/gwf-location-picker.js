@@ -32,11 +32,12 @@ service('LocationPicker', function($q, $mdDialog, MapUtil) {
 				if (!$scope.data.marker) {
 					$scope.data.marker = new google.maps.Marker({
 						position: event.latLng,
-						map: MapUtil.map(),
+						map: $scope.data.map,
 						title: 'Your position',
 						label: 'Your Position',
 						draggable: true,
 					});
+					$scope.data.map.setCenter(event.latLng);
 				}
 				$scope.data.marker.setPosition(event.latLng);
 			};
