@@ -47,6 +47,11 @@ service('PositionSrvc', function($q, $rootScope) {
 		PositionSrvc.OPTIONS.enableHighAccuracy = !PositionSrvc.OPTIONS.enableHighAccuracy;
 	};
 	
+	////////////
+	// Getter //
+	////////////
+	PositionSrvc.unknown = function() { return PositionSrvc.CURRENT.state.val === PositionSrvc.UNKNOWN; };
+	
 	///////////
 	// Probe //
 	///////////
@@ -54,7 +59,7 @@ service('PositionSrvc', function($q, $rootScope) {
 		console.log('PositionSrvc.probe()');
 		var defer = $q.defer();
 		if (PositionSrvc.PROBED) {
-			defer.resolve();
+			defer.resolve(PositionSrvc.CURRENT);
 		}
 		else if (!navigator.geolocation) {
 			defer.reject('Browser has no geolocation');
@@ -201,6 +206,20 @@ service('PositionSrvc', function($q, $rootScope) {
 			c.state.text = 'errorneous'; break;
 			console.error('Invalid state: '+state);
 		}
+	};
+	
+	///////////////////
+	// With Position //
+	///////////////////
+	PositionSrvc.withPosition = function(allowPatched) {
+		allowPatched = allowPatched === true;
+		var c = PositionSrvc.CURRENT;
+		if ( (c.real.lat) || ((allowPatched && c.patch.lat)) ) {
+			var defer = $q.defer();
+			defer.resolve(c);
+			return defer.promise;
+		}
+		return PositionSrvc.probe();
 	};
 });
 
