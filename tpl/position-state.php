@@ -1,1 +1,1 @@
-<md-button ng-controller="LocationBarCtrl" class="md-fab gwf-position-state" aria-label="Position State">{{data.state.text}}</md-button>
+<!-- <div ng-controller="LocationBarCtrl" class="gwf-position-state">{{data.position.state.text}}</div> -->
