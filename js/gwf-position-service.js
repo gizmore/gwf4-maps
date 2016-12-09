@@ -1,6 +1,6 @@
 'use strict';
 angular.module('gwf4').
-service('PositionSrvc', function($q, $rootScope) {
+service('PositionSrvc', function($q, $rootScope, LoadingSrvc) {
 
 	var PositionSrvc = this;
 	
@@ -71,6 +71,7 @@ service('PositionSrvc', function($q, $rootScope) {
 	};
 	
 	PositionSrvc.sendProbe = function(defer) {
+		LoadingSrvc.addTask('positioning');
 		navigator.geolocation.getCurrentPosition(
 				PositionSrvc.probeSuccess.bind(PositionSrvc, defer), 
 				PositionSrvc.probeFailure.bind(PositionSrvc, defer),
@@ -79,6 +80,7 @@ service('PositionSrvc', function($q, $rootScope) {
 	
 	PositionSrvc.probeSuccess = function(defer, position) {
 		console.log('PositionSrvc.probeSuccess()', defer, position);
+		LoadingSrvc.removeTask('positioning');
 		PositionSrvc.PROBED = true;
 		var p = position.coords;
 		PositionSrvc.setReal(p.latitude, p.longitude);
@@ -88,6 +90,7 @@ service('PositionSrvc', function($q, $rootScope) {
 
 	PositionSrvc.probeFailure = function(defer, error) {
 		console.log('PositionSrvc.probeFailure()', defer, error);
+		LoadingSrvc.removeTask('positioning');
 		PositionSrvc.MAX_TRY++;
 		if (PositionSrvc.MAX_TRY >= PositionSrvc.MAX_TRIES) {
 			defer.reject(error);
