@@ -7,8 +7,6 @@ service('MapUtil', function() {
 	MapUtil.MAP = null;
 	MapUtil.MAP_ID = 'GWF4MAP';
 //	MapUtil.MARKERS = {};
-//	MapUtil.PAN_TIMER = null;
-//	MapUtil.PAN_TIMEOUT = 1337;
 
 	MapUtil.OPTIONS = {
 //			backgroundColor: '#0008',
@@ -56,82 +54,16 @@ service('MapUtil', function() {
 	};
 	
 	MapUtil.map = function(id) {
-		MapUtil.MAP_ID = id || MapUtil.MAP_ID;
 		if (!MapUtil.MAP) {
-			var MAP = new google.maps.Map(MapUtil.canvas(), MapUtil.OPTIONS);
-//			if (!MapUtil.MAP) {
-//				console.error('Can not find map with id: '+id);
-//				return undefined;
-//			}
+			MapUtil.MAP_ID = id || MapUtil.MAP_ID;
+			var canvas = MapUtil.canvas();
+			if (canvas) {
+				MapUtil.MAP = new google.maps.Map(canvas, MapUtil.OPTIONS);
+			}
 		}
-		return MAP;
+		return MapUtil.MAP;
 	};
 
-//	/////////////
-//	// Markers //
-//	/////////////
-//	MapUtil.playerForMarker = function(marker) {
-//		for (var player in MapUtil.MARKERS) {
-//			if (MapUtil.MARKERS[player] === marker) {
-//				return player;
-//			}
-//		}
-//		return undefined;
-//	};
-//	
-//	MapUtil.addMarkerForPlayer = function(player) {
-//		player.marker = new google.maps.Marker({
-//			position: player.latLng(),
-//			map: MapUtil.map(),
-//			title: player.name(),
-//			label: player.name(),
-//			size: MapUtil.sizeForPlayer(player),
-////			image: MapUtil.imageForPlayer(player),
-//		});
-//		player.marker.addListener('click', function(event) {
-//			PlayerDlg.open(event, player);
-//		});
-//		
-//		MapUtil.MARKERS[player] = player.marker;
-//
-//		return player.marker;
-//	};
-//
-//	MapUtil.removeMarkerForPlayer = function(player) {
-//		if (player.marker) {
-//			player.marker.setMap(null);
-//			player.marker = undefined;
-//		}
-//		if (player.shape) {
-//			player.shape.setMap(null);
-//			player.shape = undefined;
-//		}
-//		delete MapUtil.MARKERS(player);
-//	}
-//	
-//	MapUtil.addPlayer = function(player) {
-//		return player;
-//	};
-//	
-//	MapUtil.movePlayer = function(player, latLng) {
-//		var marker = player.marker ? player.marker : MapUtil.addMarkerForPlayer(player);
-//		MapUtil.styleMarkerForPlayer(player);
-//		ShapeUtil.initShape(player, MapUtil.map());
-//	};
-//	
-//	MapUtil.styleMarkerForPlayer = function(player) {
-//		var marker = player.marker;
-//		marker.setPosition(player.latLng());
-//		jQuery(marker).animate({
-//			color: ColorUtil.colorForPlayer(player),
-//		}, 5000);
-//	};
-//
-//	MapUtil.imageForPlayer = function(player) {
-//	};
-//
-//	MapUtil.sizeForPlayer = function(player) {
-//		return 41.13 + player.fighterLevel() + player.ninjaLevel() + player.priestLevel() + player.wizardLevel(); 
-//	};
 
+	return MapUtil;
 });
