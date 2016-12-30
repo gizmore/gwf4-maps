@@ -3,10 +3,6 @@ angular.module('gwf4').
 service('MapUtil', function() {
 	
 	var MapUtil = this;
-	
-	MapUtil.MAP = null;
-	MapUtil.MAP_ID = 'GWF4MAP';
-//	MapUtil.MARKERS = {};
 
 	MapUtil.OPTIONS = {
 //			backgroundColor: '#0008',
@@ -53,19 +49,13 @@ service('MapUtil', function() {
 		return new google.maps.LatLng({ lat: lat, lng: lng });
 	};
 	
-	MapUtil.canvas = function() {
-		return document.getElementById(MapUtil.MAP_ID);
+	MapUtil.canvas = function(id) {
+		return document.getElementById(id);
 	};
 	
 	MapUtil.map = function(id) {
-		if (!MapUtil.MAP) {
-			MapUtil.MAP_ID = id || MapUtil.MAP_ID;
-			var canvas = MapUtil.canvas();
-			if (canvas) {
-				MapUtil.MAP = new google.maps.Map(canvas, MapUtil.OPTIONS);
-			}
-		}
-		return MapUtil.MAP;
+		var canvas = MapUtil.canvas(id);
+		return new google.maps.Map(canvas, MapUtil.OPTIONS);
 	};
 
 	MapUtil.middle = function(points) {
