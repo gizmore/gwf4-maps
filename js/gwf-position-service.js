@@ -124,8 +124,8 @@ service('PositionSrvc', function($q, $rootScope, LoadingSrvc) {
 	
 	PositionSrvc.watchFailure = function(error) {
 		console.log('PositionSrvc.watchFailure()', error);
-		PositionSrvc.PROBED = false;
-		PositionSrvc.probe();
+//		PositionSrvc.PROBED = false;
+//		PositionSrvc.probe();
 	};
 	
 	//////////////
