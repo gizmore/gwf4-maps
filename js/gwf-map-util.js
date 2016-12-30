@@ -48,6 +48,10 @@ service('MapUtil', function() {
 	MapUtil.positionToLatLng = function(position) {
 		return new google.maps.LatLng({lat: position.coords.latitude, lng: position.coords.longitude});
 	};
+
+	MapUtil.coordsToLatLng = function(lat, lng) {
+		return new google.maps.LatLng({ lat: lat, lng: lng });
+	};
 	
 	MapUtil.canvas = function() {
 		return document.getElementById(MapUtil.MAP_ID);
@@ -64,6 +68,14 @@ service('MapUtil', function() {
 		return MapUtil.MAP;
 	};
 
+	MapUtil.middle = function(points) {
+		var lat = 0.0, lng = 0.0, c = points.length;
+		for (var i in points) {
+			lat += points[i].lat();
+			lng += points[i].lng();
+		}
+		return MapUtil.coordsToLatLng(lat/c, lng/c); 
+	};
 
 	return MapUtil;
 });
