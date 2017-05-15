@@ -22,10 +22,14 @@ final class Module_Maps extends GWF_Module
 		GWF_Website::addJavascript($this->googleMapsScriptURL());
 	
 		$this->addCSS('gwf-maps.css');
-		$this->addJavascript('gwf-map-util.js');
-		$this->addJavascript('gwf-location-bar-controller.js');
-		$this->addJavascript('gwf-location-picker.js');
-		$this->addJavascript('gwf-position-service.js');
+		
+		if (Module_GWF::instance()->cfgAngularApp())
+		{
+			$this->addJavascript('gwf-map-util.js');
+			$this->addJavascript('gwf-location-bar-controller.js');
+			$this->addJavascript('gwf-location-picker.js');
+			$this->addJavascript('gwf-position-service.js');
+		}
 	}
 	
 	public function googleMapsScriptURL()
